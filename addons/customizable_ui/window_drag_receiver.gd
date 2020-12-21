@@ -1,6 +1,6 @@
 extends Control
 
-const PlacementUtils := preload("res://addons/customisable_ui/placement_utils.gd")
+const PlacementUtils := preload("placement_utils.gd")
 
 func _input(event : InputEvent) -> void:
 	visible = PlacementUtils.get_window_from_drag_data(

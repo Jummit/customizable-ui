@@ -5,7 +5,7 @@ export var title := "" setget set_title
 onready var root : Control = get_tree().root.find_node(
 		"WindowDragReceiver", true, false).get_parent()
 
-const PlacementUtils := preload("res://addons/customisable_ui/placement_utils.gd")
+const PlacementUtils := preload("placement_utils.gd")
 
 func _ready() -> void:
 	$Title.set_drag_forwarding(self)
