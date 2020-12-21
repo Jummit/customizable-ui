@@ -1,6 +1,6 @@
 # Customizable UI: UI 2.0 for the Godot Engine
 
-This addon allows you to add UI 2.0 to your game/application made in Godot.
+This addon allows you to add modern UI customization features to your Godot game/application.
 
 ## Features
 
