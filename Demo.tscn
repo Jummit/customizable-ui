@@ -1,0 +1,65 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/customisable_ui/window.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/customisable_ui/window_drag_receiver.tscn" type="PackedScene" id=2]
+
+[node name="Demo" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+split_offset = 499
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainPanel" parent="HSplitContainer" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 499.0
+margin_bottom = 600.0
+title = "Main Panel"
+
+[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer"]
+margin_left = 511.0
+margin_right = 1024.0
+margin_bottom = 600.0
+split_offset = 256
+
+[node name="TabContainer" type="TabContainer" parent="HSplitContainer/VSplitContainer"]
+margin_right = 513.0
+margin_bottom = 292.0
+drag_to_rearrange_enabled = true
+
+[node name="Window2" parent="HSplitContainer/VSplitContainer/TabContainer" instance=ExtResource( 1 )]
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+title = "First Panel"
+
+[node name="Window3" parent="HSplitContainer/VSplitContainer/TabContainer" instance=ExtResource( 1 )]
+visible = false
+margin_left = 0.0
+margin_top = -268.0
+margin_right = -8.0
+margin_bottom = -304.0
+title = "Second Panel"
+
+[node name="Window" parent="HSplitContainer/VSplitContainer" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 304.0
+margin_right = 513.0
+margin_bottom = 600.0
+title = "Output panel"
+
+[node name="WindowDragReceiver" parent="." instance=ExtResource( 2 )]
