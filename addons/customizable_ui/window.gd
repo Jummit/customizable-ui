@@ -2,8 +2,13 @@ tool
 extends Panel
 
 export var title := "" setget set_title
+
 onready var drag_receiver : Control = get_tree().root.find_node(
 		"WindowDragReceiver", true, false)
+
+# used for storing/restoring layouts
+# warning-ignore:unused_class_variable
+onready var original_path := get_path()
 
 const PlacementUtils := preload("placement_utils.gd")
 
@@ -29,18 +34,18 @@ func on_WindowDragReceiver_draw() -> void:
 	if not placement:
 		return
 	var third_size := rect_size / 3.0
-	var rect := Rect2(Vector2.ZERO, third_size)
+	var rect := Rect2(rect_global_position, third_size)
 	if placement.horizontal:
 		rect.size.y = rect_size.y
 	elif placement.vertical:
 		rect.size.x = rect_size.x
 	if placement.right:
-		rect.position.x = third_size.x * 2
+		rect.position.x += third_size.x * 2
 	elif placement.bottom:
-		rect.position.y = third_size.y * 2
+		rect.position.y += third_size.y * 2
 	if placement.middle:
-		rect.position = third_size
-	rect.position += rect_global_position
+		rect.position += third_size
+	rect.position = Vector2(0,0)
 	drag_receiver.draw_rect(rect, Color.lightblue, false, 3)
 
 
@@ -178,6 +183,11 @@ func can_place(window : Panel) -> PlacementUtils.WindowPlacement:
 
 
 func pop_out() -> void:
+	remove_from_container(self)
+	put_in_window()
+
+
+func put_in_window() -> WindowDialog:
 	var window := WindowDialog.new()
 	window.window_title = title
 	# don't use `popup_centered`, as it makes the popup modal
@@ -187,14 +197,12 @@ func pop_out() -> void:
 	# move the window down because the title bar is rendered above
 	window.rect_position = get_global_rect().position + Vector2(0, 20)
 	window.rect_size = rect_size
-	
-	remove_from_container(self)
 	window.add_child(self)
 	drag_receiver.get_parent().add_child(window)
 	window.show()
 	update_size(self)
-	
 	$PopInOutButton.text = "v"
+	return window
 
 
 func pop_in() -> void:
