@@ -2,18 +2,14 @@ tool
 extends Panel
 
 export var title := "" setget set_title
-onready var root : Control = get_tree().root.find_node(
-		"WindowDragReceiver", true, false).get_parent()
+onready var drag_receiver : Control = get_tree().root.find_node(
+		"WindowDragReceiver", true, false)
 
 const PlacementUtils := preload("placement_utils.gd")
 
 func _ready() -> void:
 	$Title.set_drag_forwarding(self)
-
-
-func _input(event : InputEvent):
-	if event is InputEventMouse:
-		update()
+	drag_receiver.connect("draw", self, "on_WindowDragReceiver_draw")
 
 
 func _notification(what : int) -> void:
@@ -26,7 +22,7 @@ func _notification(what : int) -> void:
 			$Title.show()
 
 
-func _draw() -> void:
+func on_WindowDragReceiver_draw() -> void:
 	var placement := can_place(
 			PlacementUtils.get_window_from_drag_data(
 			get_tree(), get_viewport().gui_get_drag_data()))
@@ -44,7 +40,8 @@ func _draw() -> void:
 		rect.position.y = third_size.y * 2
 	if placement.middle:
 		rect.position = third_size
-	draw_rect(rect, Color.lightblue, false, 3)
+	rect.position += rect_global_position
+	drag_receiver.draw_rect(rect, Color.lightblue, false, 3)
 
 
 func place_window_ontop(window : Panel) -> void:
@@ -193,7 +190,7 @@ func pop_out() -> void:
 	
 	remove_from_container(self)
 	window.add_child(self)
-	root.add_child(window)
+	drag_receiver.get_parent().add_child(window)
 	window.show()
 	update_size(self)
 	
