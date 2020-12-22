@@ -18,6 +18,8 @@ See below why this is needed.
 Add `window.tscn` scenes for every panel you need, set the `title` and add the content as child nodes.
 Then use nested `Split` - and `TabContainers` to arrange them. `SplitContainers` only support two children.
 
+Make sure to enable "Drag To Rearrange" on `TabContainers`, because otherwise they can't be dragged.
+
 ## How It Works
 
 The `window_drag_receiver` scene is necesarry to allow dropping of window data at any position on screen. It is only visible when the drag data is a window.
