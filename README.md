@@ -20,6 +20,28 @@ Then use nested `Split` - and `TabContainers` to arrange them. `SplitContainers`
 
 Make sure to enable "Drag To Rearrange" on `TabContainers`, because otherwise they can't be dragged.
 
+### Saving And Loading Layouts
+
+To save and load layouts, reference and use `layout_utils.gd`.
+
+**Example:**
+
+```gdscript
+# the scene layout:
+# Root (Control)
+# ┗ Container (HSplitContainer)
+#   ┣ Panel (window.gd)
+#   ┗ Panel (window.gd)
+
+const LayoutUtils = preload("res://addons/customizable_ui/layout_utils.gd")
+
+# save a layout in the user folder. The first argument is the root container with panels inside.
+LayoutUtils.save_layout($Root/Container, "user://layout.json")
+
+# load a layout. The first argument is the parent of the root container.
+LayoutUtils.load_layout($Root, "user://layout.json")
+```
+
 ## How It Works
 
 The `window_drag_receiver` scene is necesarry to allow dropping of window data at any position on screen. It is only visible when the drag data is a window.
