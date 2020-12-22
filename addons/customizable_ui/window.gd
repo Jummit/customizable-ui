@@ -64,22 +64,22 @@ func place_window_ontop(window : Panel) -> void:
 
 # container
 # ┣ window
-# ┗⎿ self
-#⎿⎿⎿      ↓
+# ┗ self
+#     ↓
 # new_container
 # ┣ window
-# ┗⎿ self
+# ┗ self
 func place_window_with_same_parent(window : Panel,
 		placement : PlacementUtils.WindowPlacement) -> void:
 	get_parent().replace_by(placement.get_container(window))
 
 # container
 # ┣ other_window
-# ┗⎿ self
-#⎿⎿⎿      ↓
+# ┗ self
+#      ↓
 # container
 # ┣ other_window
-# ┗⎿ new_container
+# ┗ new_container
 #   ┣ self
 #   ┗ window
 func place_window_normal(window : Panel,
@@ -98,12 +98,12 @@ func place_window_normal(window : Panel,
 
 # tab_container
 # ┣ self
-# ┗⎿ other_window
-#⎿⎿⎿      ↓
+# ┗ other_window
+#     ↓
 # tab_container
 # ┣ self
 # ┣ other_window
-# ┗⎿ window
+# ┗ window
 func place_window_into_tabs(window : Panel,
 		placement : PlacementUtils.WindowPlacement) -> void:
 	remove_from_container(window)
@@ -111,12 +111,12 @@ func place_window_into_tabs(window : Panel,
 
 # tab_container
 # ┣ other_window
-# ┗⎿ self
-#⎿⎿⎿      ↓
+# ┗ self
+#    ↓
 # new_container
 # ┣ tab_container
 # ┃ ┣ other_window
-# ┃ ┗⎿ self
+# ┃ ┗ self
 # ┗ window
 func place_window_on_tabs(window : Panel,
 		placement : PlacementUtils.WindowPlacement) -> void:
@@ -136,18 +136,18 @@ func place_window_on_tabs(window : Panel,
 
 # container
 # ┣ window
-# ┗⎿ other_window
-#⎿⎿⎿      ↓
+# ┗ other_window
+#      ↓
 # other_window
 
 # container
 # ┣ window
 # ┣ other_window
-# ┗⎿ another_window
-#⎿⎿⎿      ↓
+# ┗ another_window
+#      ↓
 # container
 # ┣ other_window
-# ┗⎿ another_window
+# ┗ another_window
 func remove_from_container(window : Panel) -> void:
 	var parent := window.get_parent()
 	parent.remove_child(window)
