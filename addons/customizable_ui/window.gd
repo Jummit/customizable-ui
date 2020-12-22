@@ -54,7 +54,7 @@ func place_window_ontop(window : Panel) -> void:
 	
 	if get_parent() is TabContainer:
 		if placement.middle:
-			place_window_into_tabs(window, placement)
+			place_window_into_tabs(window)
 		else:
 			place_window_on_tabs(window, placement)
 	elif window.get_parent() == get_parent():
@@ -104,8 +104,7 @@ func place_window_normal(window : Panel,
 # ┣ self
 # ┣ other_window
 # ┗ window
-func place_window_into_tabs(window : Panel,
-		placement : PlacementUtils.WindowPlacement) -> void:
+func place_window_into_tabs(window : Panel) -> void:
 	remove_from_container(window)
 	get_parent().add_child(window)
 
@@ -213,7 +212,7 @@ func set_title(to) -> void:
 		get_parent().set_tab_title(get_index(), title)
 
 
-func get_drag_data_fw(position : Vector2, _control : Container):
+func get_drag_data_fw(_position : Vector2, _control : Container):
 	return {
 		type = "window",
 		window = self,

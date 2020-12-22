@@ -39,11 +39,11 @@ class WindowPlacement:
 		if horizontal:
 			container = HSplitContainer.new()
 			if window:
-				container.split_offset = window.rect_size.x / 2.0
+				container.split_offset = int(window.rect_size.x / 2.0)
 		elif vertical:
 			container = VSplitContainer.new()
 			if window:
-				container.split_offset = window.rect_size.y / 2.0
+				container.split_offset = int(window.rect_size.y / 2.0)
 		return container
 	
 	func _to_string() -> String:
