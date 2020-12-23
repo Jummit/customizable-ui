@@ -28,29 +28,29 @@ func _notification(what : int) -> void:
 
 
 func on_WindowDragReceiver_draw() -> void:
-	var placement := can_place(
+	var placement := get_placement(
 			PlacementUtils.get_window_from_drag_data(
 			get_tree(), get_viewport().gui_get_drag_data()))
 	if not placement:
 		return
 	var third_size := rect_size / 3.0
-	var rect := Rect2(rect_global_position, third_size)
+	var rect := Rect2(Vector2(), third_size)
 	if placement.horizontal:
 		rect.size.y = rect_size.y
 	elif placement.vertical:
 		rect.size.x = rect_size.x
 	if placement.right:
-		rect.position.x += third_size.x * 2
+		rect.position.x = third_size.x * 2
 	elif placement.bottom:
-		rect.position.y += third_size.y * 2
+		rect.position.y = third_size.y * 2
 	if placement.middle:
-		rect.position += third_size
-	rect.position = Vector2(0,0)
+		rect.position = third_size
+	rect.position += rect_global_position
 	drag_receiver.draw_rect(rect, Color.lightblue, false, 3)
 
 
 func place_window_ontop(window : Panel) -> void:
-	var placement := can_place(window)
+	var placement := get_placement(window)
 	if not placement:
 		return
 	
@@ -172,7 +172,7 @@ func update_size(container : Control) -> void:
 	container.margin_bottom = 0
 
 
-func can_place(window : Panel) -> PlacementUtils.WindowPlacement:
+func get_placement(window : Panel) -> PlacementUtils.WindowPlacement:
 	if not window or (not visible or window == self and\
 			not get_parent() is TabContainer):
 		return null

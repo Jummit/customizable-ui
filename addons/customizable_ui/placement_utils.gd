@@ -63,7 +63,7 @@ class WindowPlacement:
 static func get_drop_placement(panel : Panel) -> WindowPlacement:
 	var mouse := panel.get_local_mouse_position()
 	var third_size:= panel.rect_size / 3.0
-	if not panel.get_global_rect().has_point(panel.get_global_mouse_position()):
+	if not Rect2(Vector2(), panel.rect_size).has_point(mouse):
 		return null
 	if mouse.x < third_size.x:
 		return WindowPlacement.new(-1, 0)
@@ -84,5 +84,5 @@ static func get_window_from_drag_data(tree : SceneTree, data) -> Panel:
 				return data.window
 			"tabc_element":
 				return tree.root.get_node(data.from_path).\
-						get_child(data.tabc_element) as Panel
+					get_child(data.tabc_element) as Panel
 	return null
