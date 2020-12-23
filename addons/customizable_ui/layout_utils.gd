@@ -28,9 +28,9 @@ static func load_layout(root : Node, layout_file : String) -> void:
 	
 	var windows := {}
 	for window in root.get_tree().get_nodes_in_group("Windows"):
-		window.get_parent().remove_child(window)
 		if window.get_parent() is WindowDialog:
 			window.get_parent().queue_free()
+		window.get_parent().remove_child(window)
 		windows[String(window.original_path)] = window
 	
 	for popped_out in layout.popped_out:
