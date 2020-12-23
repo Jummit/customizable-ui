@@ -82,6 +82,4 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 			_load_individual_layout(container, window, windows)
 	root.add_child(container)
 	if container is SplitContainer:
-		print(layout.split)
 		container.split_offset = layout.split
-		print(container.split_offset)
