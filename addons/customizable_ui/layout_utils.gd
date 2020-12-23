@@ -31,8 +31,6 @@ static func load_layout(root : Node, layout_file : String) -> void:
 		window.get_parent().remove_child(window)
 		if window.get_parent() is WindowDialog:
 			window.get_parent().queue_free()
-		# window might be hidden inside a `TabContainer`
-		window.show()
 		windows[String(window.original_path)] = window
 	
 	for popped_out in layout.popped_out:
@@ -54,7 +52,10 @@ static func _store_layout(root : Container) -> Dictionary:
 	
 	for node in root.get_children():
 		if node is Panel:
-			layout.children.append(node.original_path)
+			layout.children.append({
+					path = node.original_path,
+					visible = node.visible,
+				})
 		else:
 			layout.children.append(_store_layout(node))
 	
@@ -74,8 +75,9 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 	container.anchor_right = 1
 	container.anchor_bottom = 1
 	for window in layout.children:
-		if window is String:
-			container.add_child(windows[window])
+		if "path" in window:
+			container.add_child(windows[window.path])
+			windows[window.path].visible = window.visible
 		else:
 			_load_individual_layout(container, window, windows)
 	root.add_child(container)
