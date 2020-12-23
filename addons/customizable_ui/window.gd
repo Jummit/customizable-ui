@@ -177,8 +177,6 @@ func get_placement(window : Panel) -> PlacementUtils.WindowPlacement:
 			not get_parent() is TabContainer):
 		return null
 	var placement := PlacementUtils.get_drop_placement(self)
-	if placement and placement.middle and get_parent() is TabContainer:
-		return null
 	return placement
 
 
