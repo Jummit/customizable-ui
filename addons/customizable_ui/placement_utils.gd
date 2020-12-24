@@ -16,6 +16,8 @@ class WindowPlacement:
 	var vertical : bool
 	var horizontal : bool
 	var middle : bool
+	var first : bool
+	var index : int
 	var _position : Vector2
 	
 	func _init(x : int, y : int) -> void:
@@ -29,6 +31,8 @@ class WindowPlacement:
 		bottom = _position == Vector2.DOWN
 		left = _position == Vector2.LEFT
 		right = _position == Vector2.RIGHT
+		first = left or top
+		index = 0 if first else 1
 	
 	func get_container(window : Panel = null) -> Container:
 		if middle:

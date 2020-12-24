@@ -13,5 +13,7 @@ func can_drop_data(_position: Vector2, data) -> bool:
 
 
 func drop_data(_position : Vector2, data) -> void:
-	get_tree().call_group("Windows", "place_window_ontop",
-			PlacementUtils.get_window_from_drag_data(get_tree(), data))
+	var window_data := PlacementUtils.get_window_from_drag_data(get_tree(), data)
+	for window in get_tree().get_nodes_in_group("Windows"):
+		if window.place_window_ontop(window_data):
+			break
