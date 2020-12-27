@@ -127,7 +127,7 @@ func place_window_into_tabs(window : Panel) -> void:
 # ┗ window
 func place_window_on_tabs(window : Panel,
 	placement : PlacementUtils.WindowPlacement) -> void:
-	# warning: `window` could be self
+	# warning: `window` could be self, which causes a crash
 	
 	var parent_container := get_parent().get_parent()
 	var tab_container : TabContainer = get_parent()
@@ -231,6 +231,8 @@ func put_in_window() -> WindowDialog:
 	# move the window down because the title bar is rendered above
 	window.rect_position = get_global_rect().position + Vector2(0, 20)
 	window.rect_size = rect_size
+	# `WindowDialog` doesn't use child minimum size
+	window.rect_min_size = rect_min_size
 	window.add_child(self)
 	drag_receiver.get_parent().add_child(window)
 	window.show()
