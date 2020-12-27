@@ -238,12 +238,14 @@ func put_in_window() -> WindowDialog:
 	window.show()
 	update_size(self)
 	$PopInOutButton.text = "v"
+	$PopInOutButton.hint_tooltip = "Pop window in"
 	return window
 
 
 func pop_in() -> void:
 	get_tree().call_group("Windows", "place_window_ontop", self)
 	$PopInOutButton.text = "^"
+	$PopInOutButton.hint_tooltip = "Pop window out"
 
 
 func set_title(to) -> void:
