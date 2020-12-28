@@ -10,6 +10,8 @@ To rearrange a panel, drag the title above another window. A preview of the wind
 
 To pop windows out and back in, click the button to the right of the title.
 
+The drop preview is a `StyleBox` and can be customized.
+
 ## Usage
 
 Add an instance of the `window_drag_receiver.tscn` scene at the bottom of your tree.
@@ -19,6 +21,10 @@ Add `window.tscn` scenes for every panel you need, set the `title` and add the c
 Then use nested `Split` - and `TabContainers` to arrange them. `SplitContainers` only support two children.
 
 Make sure to enable "Drag To Rearrange" on `TabContainers`, because otherwise they can't be dragged.
+
+### Customizing the drop preview
+
+The drop preview uses the `preview` `StyleBox` of the `WindowDragReceiver` node. By default it is the `drop_preview.stylebox` located in the addon folder.
 
 ### Saving And Loading Layouts
 

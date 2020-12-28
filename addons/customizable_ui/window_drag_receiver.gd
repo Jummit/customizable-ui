@@ -1,5 +1,8 @@
 extends Control
 
+# warning-ignore:unused_class_variable
+export var preview : StyleBox = preload("drop_preview.stylebox")
+
 const PlacementUtils := preload("placement_utils.gd")
 
 func _input(_event : InputEvent) -> void:

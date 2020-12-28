@@ -46,7 +46,8 @@ func on_WindowDragReceiver_draw() -> void:
 	if placement.middle:
 		rect.position = third_size
 	rect.position += rect_global_position
-	drag_receiver.draw_rect(rect, Color.lightblue, false, 3)
+	drag_receiver.preview.draw(
+				drag_receiver.get_canvas_item(), rect)
 
 
 func place_window_ontop(window : Panel) -> bool:
