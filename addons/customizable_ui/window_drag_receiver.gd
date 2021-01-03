@@ -1,5 +1,12 @@
 extends Control
 
+"""
+A `Control` that is used for dropping windows anywhere and preview rendering
+
+Shows itself if a window is being dragged. If the window is dropped, tries to
+place the window on all other windows until it is successfull.
+"""
+
 # warning-ignore:unused_class_variable
 export var preview : StyleBox = preload("drop_preview.stylebox")
 

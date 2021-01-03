@@ -1,6 +1,16 @@
 tool
 extends Panel
 
+"""
+A panel which can be repositioned by dragging the title above other windows
+
+It draws the preview if a windew is being dragged above it.
+It is holds the logic for rearranging the node structure after a window has
+been repositioned.
+
+Windows can be popped out by pressing a button which makes them floating windows.
+"""
+
 export var title := "" setget set_title
 
 onready var drag_receiver : Control = get_tree().root.find_node(
@@ -27,6 +37,20 @@ func _notification(what : int) -> void:
 			$Title.show()
 
 
+func set_title(to) -> void:
+	title = to
+	$Title.text = to
+	if get_parent() is TabContainer:
+		get_parent().set_tab_title(get_index(), title)
+
+
+func _on_PopInOutButton_pressed():
+	if get_parent() is WindowDialog:
+		pop_in()
+	else:
+		pop_out()
+
+
 func on_WindowDragReceiver_draw() -> void:
 	var placement := get_placement(
 		PlacementUtils.get_window_from_drag_data(
@@ -48,6 +72,13 @@ func on_WindowDragReceiver_draw() -> void:
 	rect.position += rect_global_position
 	drag_receiver.preview.draw(
 				drag_receiver.get_canvas_item(), rect)
+
+
+func get_drag_data_fw(_position : Vector2, _control : Container):
+	return {
+		type = "window",
+		window = self,
+	}
 
 
 func place_window_ontop(window : Panel) -> bool:
@@ -247,24 +278,3 @@ func pop_in() -> void:
 	get_tree().call_group("Windows", "place_window_ontop", self)
 	$PopInOutButton.text = "^"
 	$PopInOutButton.hint_tooltip = "Pop window out"
-
-
-func set_title(to) -> void:
-	title = to
-	$Title.text = to
-	if get_parent() is TabContainer:
-		get_parent().set_tab_title(get_index(), title)
-
-
-func get_drag_data_fw(_position : Vector2, _control : Container):
-	return {
-		type = "window",
-		window = self,
-	}
-
-
-func _on_PopInOutButton_pressed():
-	if get_parent() is WindowDialog:
-		pop_in()
-	else:
-		pop_out()

@@ -1,3 +1,7 @@
+"""
+Utility to save and load layouts as json files
+"""
+
 static func save_layout(root : Container, layout_file : String) -> void:
 	var layout := {
 		windows = _store_layout(root),
