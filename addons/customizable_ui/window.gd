@@ -254,9 +254,6 @@ func pop_out() -> void:
 
 
 func put_in_window() -> WindowDialog:
-	# to make `get_global_rect` work
-	if not is_inside_tree():
-		yield(self, "tree_entered")
 	var window := WindowDialog.new()
 	window.window_title = title
 	# don't use `popup_centered`, as it makes the popup modal
@@ -264,7 +261,7 @@ func put_in_window() -> WindowDialog:
 	window.get_close_button().hide()
 	window.resizable = true
 	# move the window down because the title bar is rendered above
-	window.rect_position = get_global_rect().position + Vector2(0, 20)
+	window.rect_position = get_rect().position + Vector2(0, 20)
 	window.rect_size = rect_size
 	# `WindowDialog` doesn't use child minimum size
 	window.rect_min_size = rect_min_size
