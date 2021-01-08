@@ -157,9 +157,23 @@ func place_window_into_tabs(window : Panel) -> void:
 # ┃ ┣ other_window
 # ┃ ┗ self
 # ┗ window
+
+# container
+# ┣ tab_container
+# ┃ ┣ other_window
+# ┃ ┗ self
+# ┗ window
+#    ↓
+# new_container
+# ┣ tab_container
+# ┃ ┣ other_window
+# ┃ ┗ self
+# ┗ window
 func place_window_on_tabs(window : Panel,
 	placement : PlacementUtils.WindowPlacement) -> void:
-	# warning: `window` could be self, which causes a crash
+	if window.get_parent() == get_parent().get_parent():
+		window.get_parent().replace_by(placement.get_container(window))
+		return
 	
 	var parent_container := get_parent().get_parent()
 	var tab_container : TabContainer = get_parent()
