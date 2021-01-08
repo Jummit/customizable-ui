@@ -254,6 +254,9 @@ func pop_out() -> void:
 
 
 func put_in_window() -> WindowDialog:
+	# to make `get_global_rect` work
+	if not is_inside_tree():
+		yield(self, "tree_entered")
 	var window := WindowDialog.new()
 	window.window_title = title
 	# don't use `popup_centered`, as it makes the popup modal
