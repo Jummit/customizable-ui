@@ -256,7 +256,8 @@ func update_size(container : Control) -> void:
 
 
 func get_placement(window : Panel) -> PlacementUtils.WindowPlacement:
-	if (not window) or (not visible) or (window == self and not get_parent() is TabContainer):
+	if (not window) or (not visible) or (window == self and\
+			not get_parent() is TabContainer):
 		return null
 	var placement := PlacementUtils.get_drop_placement(self)
 	return placement
