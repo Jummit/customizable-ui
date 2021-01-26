@@ -100,6 +100,8 @@ func place_window_ontop(window : Panel) -> bool:
 	
 	if get_parent() is TabContainer:
 		if placement.middle:
+			if get_parent() == window.get_parent():
+				return false
 			place_window_into_tabs(window)
 		elif window == self:
 			place_self_on_tabs(placement)
