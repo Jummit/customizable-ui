@@ -23,12 +23,19 @@ onready var original_path := get_path()
 
 const PlacementUtils := preload("placement_utils.gd")
 
-var title : String
+var title : String setget set_title
 
 func _ready() -> void:
 	$Title.set_drag_forwarding(self)
 	drag_receiver.connect("draw", self, "on_WindowDragReceiver_draw")
-	update_title()
+	if title:
+		return
+	for letter in name:
+		if letter.capitalize() == letter:
+			title += " "
+		title += letter
+	title = title.replace("Window", "").substr(1)
+	set_title(title)
 
 
 func _notification(what : int) -> void:
@@ -44,16 +51,6 @@ func _notification(what : int) -> void:
 			# apply visibilty to dialog
 			if get_parent() is WindowDialog:
 				get_parent().visible = visible
-
-
-func update_title() -> void:
-	title = ""
-	for letter in name:
-		if letter.capitalize() == letter:
-			title += " "
-		title += letter
-	title = title.replace("Window", "").substr(1)
-	$Title.text = title
 
 
 func _on_PopInOutButton_pressed():
@@ -84,6 +81,11 @@ func on_WindowDragReceiver_draw() -> void:
 	rect.position += rect_global_position
 	drag_receiver.preview.draw(
 				drag_receiver.get_canvas_item(), rect)
+
+
+func set_title(to) -> void:
+	title = to
+	$Title.text = title
 
 
 func get_drag_data_fw(_position : Vector2, _control : Container):
