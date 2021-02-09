@@ -12,10 +12,12 @@ Windows can be popped out by pressing a button which makes them floating windows
 """
 
 # warning-ignore:unused_signal
-signal layout_changed
+signal layout_changed(meta)
 
 onready var drag_receiver : Control = get_tree().root.find_node(
 	"WindowDragReceiver", true, false)
+onready var title_label : Label = $Title
+onready var pop_in_out_button : Button = $PopInOutButton
 
 # used for storing/restoring layouts
 # warning-ignore:unused_class_variable
@@ -23,10 +25,10 @@ onready var original_path := get_path()
 
 const PlacementUtils := preload("placement_utils.gd")
 
-var title : String setget set_title
+export var title : String setget set_title
 
 func _ready() -> void:
-	$Title.set_drag_forwarding(self)
+	title_label.set_drag_forwarding(self)
 	drag_receiver.connect("draw", self, "on_WindowDragReceiver_draw")
 	if title:
 		return
@@ -51,6 +53,11 @@ func _notification(what : int) -> void:
 			# apply visibilty to dialog
 			if get_parent() is WindowDialog:
 				get_parent().visible = visible
+
+
+func get_data():
+	if get_child(2).has_method("get_layout_data"):
+		return get_child(2).get_layout_data()
 
 
 func _on_PopInOutButton_pressed():
@@ -79,8 +86,7 @@ func on_WindowDragReceiver_draw() -> void:
 	if placement.middle:
 		rect.position = third_size
 	rect.position += rect_global_position
-	drag_receiver.preview.draw(
-				drag_receiver.get_canvas_item(), rect)
+	drag_receiver.preview.draw(drag_receiver.get_canvas_item(), rect)
 
 
 func set_title(to) -> void:
@@ -296,11 +302,6 @@ func get_placement(window : Panel) -> PlacementUtils.WindowPlacement:
 	return placement
 
 
-func pop_out() -> void:
-	remove_from_container(self)
-	put_in_window()
-
-
 func put_in_window() -> WindowDialog:
 	var window := WindowDialog.new()
 	window.window_title = title
@@ -317,12 +318,17 @@ func put_in_window() -> WindowDialog:
 	drag_receiver.get_parent().add_child(window)
 	window.visible = visible
 	update_size(self)
-	$PopInOutButton.text = "v"
-	$PopInOutButton.hint_tooltip = "Pop window in"
+	pop_in_out_button.text = "v"
+	pop_in_out_button.hint_tooltip = "Pop window in."
 	return window
 
 
 func pop_in() -> void:
 	get_tree().call_group("Windows", "place_window_ontop", self)
-	$PopInOutButton.text = "^"
-	$PopInOutButton.hint_tooltip = "Pop window out"
+	pop_in_out_button.text = "^"
+	pop_in_out_button.hint_tooltip = "Pop window out."
+
+
+func pop_out() -> void:
+	remove_from_container(self)
+	put_in_window()

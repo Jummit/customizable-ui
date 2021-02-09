@@ -18,8 +18,9 @@ static func save_layout(root : Container, layout_file : String) -> void:
 				height = parent.rect_size.y,
 				name = window.name,
 			}
-			if window.has_meta("layout"):
-				data.metadata = window.get_meta("layout")
+			var layout_data = window.get_data()
+			if layout_data:
+				data.data = layout_data
 			layout.popped_out.append(data)
 	
 	var file := File.new()
@@ -46,8 +47,8 @@ static func load_layout(root : Node, layout_file : String) -> void:
 		var window_dialog : WindowDialog = panel.put_in_window()
 		window_dialog.rect_position = Vector2(popped_out.x, popped_out.y)
 		window_dialog.rect_size = Vector2(popped_out.width, popped_out.height)
-		if "metadata" in popped_out:
-			panel.set_meta("layout", popped_out.metadata)
+		var data = null if not "data" in popped_out else popped_out.data
+		panel.emit_signal("layout_changed", data)
 	
 	_remove_containers(root)
 	_load_individual_layout(root, layout.windows, windows)
@@ -63,14 +64,15 @@ static func _store_layout(root : Container) -> Dictionary:
 	
 	for node in root.get_children():
 		if node is Panel:
-			var data := {
+			var layout_data := {
 				name = node.name,
 			}
 			if not node.visible:
-				data.visible = false
-			if node.has_meta("layout"):
-				data.metadata = node.get_meta("layout")
-			layout.children.append(data)
+				layout_data.visible = false
+			var data = node.get_data()
+			if data:
+				layout_data.data = data
+			layout.children.append(layout_data)
 		else:
 			layout.children.append(_store_layout(node))
 	
@@ -94,9 +96,8 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 			var panel : Panel = windows[window.name]
 			container.add_child(panel)
 			panel.visible = true if not "visible" in window else window.visible
-			if "metadata" in window:
-				panel.set_meta("layout", window.metadata)
-			panel.emit_signal("layout_changed")
+			var data = null if not "data" in window else window.data
+			panel.emit_signal("layout_changed", data)
 		else:
 			_load_individual_layout(container, window, windows)
 	root.add_child(container)
