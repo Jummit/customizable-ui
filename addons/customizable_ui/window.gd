@@ -1,4 +1,3 @@
-tool
 extends Panel
 
 """
@@ -56,7 +55,7 @@ func _notification(what : int) -> void:
 
 
 func get_data():
-	if get_child(2).has_method("get_layout_data"):
+	if get_child_count() > 2 and get_child(2).has_method("get_layout_data"):
 		return get_child(2).get_layout_data()
 
 

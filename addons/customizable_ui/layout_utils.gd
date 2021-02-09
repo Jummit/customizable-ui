@@ -20,7 +20,7 @@ static func save_layout(root : Container, layout_file : String) -> void:
 			}
 			var layout_data = window.get_data()
 			if layout_data:
-				data.data = layout_data
+				data.data = var2str(layout_data)
 			layout.popped_out.append(data)
 	
 	var file := File.new()
@@ -32,7 +32,7 @@ static func save_layout(root : Container, layout_file : String) -> void:
 static func load_layout(root : Node, layout_file : String) -> void:
 	var file := File.new()
 	file.open(layout_file, File.READ)
-	var layout : Dictionary = parse_json(file.get_as_text())
+	var layout : Dictionary = str2var(file.get_as_text())
 	file.close()
 	
 	var windows := {}
@@ -47,7 +47,9 @@ static func load_layout(root : Node, layout_file : String) -> void:
 		var window_dialog : WindowDialog = panel.put_in_window()
 		window_dialog.rect_position = Vector2(popped_out.x, popped_out.y)
 		window_dialog.rect_size = Vector2(popped_out.width, popped_out.height)
-		var data = null if not "data" in popped_out else popped_out.data
+		var data
+		if "data" in popped_out:
+			data = str2var(popped_out.data)
 		panel.emit_signal("layout_changed", data)
 	
 	_remove_containers(root)
@@ -71,7 +73,7 @@ static func _store_layout(root : Container) -> Dictionary:
 				layout_data.visible = false
 			var data = node.get_data()
 			if data:
-				layout_data.data = data
+				layout_data.data = var2str(data)
 			layout.children.append(layout_data)
 		else:
 			layout.children.append(_store_layout(node))
@@ -96,7 +98,9 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 			var panel : Panel = windows[window.name]
 			container.add_child(panel)
 			panel.visible = true if not "visible" in window else window.visible
-			var data = null if not "data" in window else window.data
+			var data
+			if "data" in window:
+				data = str2var(window.data)
 			panel.emit_signal("layout_changed", data)
 		else:
 			_load_individual_layout(container, window, windows)

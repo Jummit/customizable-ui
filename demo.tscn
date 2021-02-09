@@ -1,16 +1,26 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/customizable_ui/window_drag_receiver.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/customizable_ui/window.tscn" type="PackedScene" id=2]
+[ext_resource path="res://demo.gd" type="Script" id=3]
+[ext_resource path="res://color_picker.gd" type="Script" id=4]
 
 [node name="Demo" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Root" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
+[node name="HSplitContainer" type="HSplitContainer" parent="Root"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 split_offset = 499
@@ -18,48 +28,99 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MainPanel" parent="HSplitContainer" instance=ExtResource( 2 )]
+[node name="MainWindow" parent="Root/HSplitContainer" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 0.0
 margin_top = 0.0
-margin_right = 499.0
+margin_right = 539.0
 margin_bottom = 600.0
-title = "Main Panel"
 
-[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer"]
-margin_left = 511.0
+[node name="HBoxContainer" type="HBoxContainer" parent="Root/HSplitContainer/MainWindow"]
+anchor_right = 1.0
+margin_top = 28.0
+margin_bottom = 24.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LayoutNameEdit" type="LineEdit" parent="Root/HSplitContainer/MainWindow/HBoxContainer"]
+margin_right = 380.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.06
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SaveButton" type="Button" parent="Root/HSplitContainer/MainWindow/HBoxContainer"]
+margin_left = 384.0
+margin_right = 459.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "Save"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LoadButton" type="Button" parent="Root/HSplitContainer/MainWindow/HBoxContainer"]
+margin_left = 463.0
+margin_right = 539.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "Load"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VSplitContainer" type="VSplitContainer" parent="Root/HSplitContainer"]
+margin_left = 551.0
 margin_right = 1024.0
 margin_bottom = 600.0
 split_offset = 256
 
-[node name="TabContainer" type="TabContainer" parent="HSplitContainer/VSplitContainer"]
-margin_right = 513.0
-margin_bottom = 292.0
+[node name="TabContainer" type="TabContainer" parent="Root/HSplitContainer/VSplitContainer"]
+margin_right = 473.0
+margin_bottom = 312.0
 drag_to_rearrange_enabled = true
 
-[node name="Window2" parent="HSplitContainer/VSplitContainer/TabContainer" instance=ExtResource( 2 )]
+[node name="ColorWindow" parent="Root/HSplitContainer/VSplitContainer/TabContainer" instance=ExtResource( 2 )]
 margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
-title = "First Panel"
 
-[node name="Window3" parent="HSplitContainer/VSplitContainer/TabContainer" instance=ExtResource( 2 )]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Root/HSplitContainer/VSplitContainer/TabContainer/ColorWindow"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -41.0
+margin_top = -40.0
+margin_right = 41.0
+margin_bottom = 40.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UtilityWindow" parent="Root/HSplitContainer/VSplitContainer/TabContainer" instance=ExtResource( 2 )]
 visible = false
 margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
-title = "Second Panel"
 
-[node name="Window" parent="HSplitContainer/VSplitContainer" instance=ExtResource( 2 )]
+[node name="OutputWindow" parent="Root/HSplitContainer/VSplitContainer" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 0.0
-margin_top = 304.0
-margin_right = 513.0
+margin_top = 324.0
+margin_right = 473.0
 margin_bottom = 600.0
-title = "Output panel"
 
 [node name="WindowDragReceiver" parent="." instance=ExtResource( 1 )]
+
+[connection signal="pressed" from="Root/HSplitContainer/MainWindow/HBoxContainer/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="pressed" from="Root/HSplitContainer/MainWindow/HBoxContainer/LoadButton" to="." method="_on_LoadButton_pressed"]
+[connection signal="layout_changed" from="Root/HSplitContainer/VSplitContainer/TabContainer/ColorWindow" to="Root/HSplitContainer/VSplitContainer/TabContainer/ColorWindow/ColorPickerButton" method="_on_layout_changed"]
