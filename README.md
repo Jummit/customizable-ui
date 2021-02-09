@@ -22,6 +22,16 @@ Then use nested `Split` - and `TabContainers` to arrange them. `SplitContainers`
 
 Make sure to enable "Drag To Rearrange" on `TabContainers`, because otherwise they can't be dragged.
 
+## Titles
+
+The titles of windows are generated from their node name. Window is removed from the name.
+
+**Examples:**
+
+* ToolsWindow -> Tools
+* Settings -> Settings
+* GameScreen -> Game Screen
+
 ### Customizing the drop preview
 
 The drop preview uses the `preview` `StyleBox` of the `WindowDragReceiver` node. By default it is the `drop_preview.stylebox` located in the addon folder.
@@ -46,6 +56,22 @@ LayoutUtils.save_layout($Root/Container, "user://layout.json")
 
 # load a layout. The first argument is the parent of the root container.
 LayoutUtils.load_layout($Root, "user://layout.json")
+```
+
+## Layout Metadata
+
+To store custom data in layouts, add a `get_layout_data` function to the child node of the panel.
+
+```gdscript
+func get_layout_data():
+	return some_value
+```
+
+To apply the metadata when a layout is loaded, connect to the `layout_changed` signal of the panel:
+
+```gdscript
+func _on_layout_changed(meta) -> void:
+	# do something with `meta`
 ```
 
 ## How It Works
