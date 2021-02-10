@@ -47,10 +47,7 @@ static func load_layout(root : Node, layout_file : String) -> void:
 		var window_dialog : WindowDialog = panel.put_in_window()
 		window_dialog.rect_position = Vector2(popped_out.x, popped_out.y)
 		window_dialog.rect_size = Vector2(popped_out.width, popped_out.height)
-		var data
-		if "data" in popped_out:
-			data = str2var(popped_out.data)
-		panel.emit_signal("layout_changed", data)
+		panel.emit_signal("layout_changed", get_data(popped_out))
 	
 	_remove_containers(root)
 	_load_individual_layout(root, layout.windows, windows)
@@ -98,10 +95,7 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 			var panel : Panel = windows[window.name]
 			container.add_child(panel)
 			panel.visible = true if not "visible" in window else window.visible
-			var data
-			if "data" in window:
-				data = str2var(window.data)
-			panel.emit_signal("layout_changed", data)
+			panel.emit_signal("layout_changed", get_data(window))
 		else:
 			_load_individual_layout(container, window, windows)
 	root.add_child(container)
@@ -109,3 +103,12 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 		container.split_offset = layout.split
 	if container is TabContainer:
 		container.drag_to_rearrange_enabled = true
+
+
+static func get_data(layout):
+	if "data" in layout:
+		if layout.data is String:
+			return str2var(layout.data)
+		else:
+			return layout.data
+	return null
