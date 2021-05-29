@@ -2,6 +2,8 @@
 Utility to save and load layouts as json files
 """
 
+const Window = preload("res://addons/third_party/customizable_ui/window.gd")
+
 static func save_layout(root : Container, layout_file : String) -> void:
 	var layout := {
 		windows = _store_layout(root),
@@ -43,11 +45,11 @@ static func load_layout(root : Node, layout_file : String) -> void:
 		windows[window.name] = window
 	
 	for popped_out in layout.popped_out:
-		var panel : Panel = windows[popped_out.name]
-		var window_dialog : WindowDialog = panel.put_in_window()
+		var window : Window = windows[popped_out.name]
+		var window_dialog : WindowDialog = window.put_in_window()
 		window_dialog.rect_position = Vector2(popped_out.x, popped_out.y)
 		window_dialog.rect_size = Vector2(popped_out.width, popped_out.height)
-		panel.emit_signal("layout_changed", get_data(popped_out))
+		window.emit_signal("layout_changed", get_data(popped_out))
 	
 	_remove_containers(root)
 	_load_individual_layout(root, layout.windows, windows)
@@ -58,8 +60,9 @@ static func _store_layout(root : Container) -> Dictionary:
 		type = root.get_class(),
 		children = []
 	}
-	if root is SplitContainer and root.split_offset:
-		layout.split = root.split_offset
+	var split_root := root as SplitContainer
+	if split_root and split_root.split_offset:
+		layout.split = split_root.split_offset
 	
 	for node in root.get_children():
 		if node is Panel:
@@ -100,9 +103,9 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 			_load_individual_layout(container, window, windows)
 	root.add_child(container)
 	if container is SplitContainer and "split" in layout:
-		container.split_offset = layout.split
+		(container as SplitContainer).split_offset = layout.split
 	if container is TabContainer:
-		container.drag_to_rearrange_enabled = true
+		(container as TabContainer).drag_to_rearrange_enabled = true
 
 
 static func get_data(layout):

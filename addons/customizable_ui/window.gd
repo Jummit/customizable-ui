@@ -13,7 +13,7 @@ Windows can be popped out by pressing a button which makes them floating windows
 # warning-ignore:unused_signal
 signal layout_changed(meta)
 
-onready var drag_receiver : Control = get_tree().root.find_node(
+onready var drag_receiver : WindowDragReceiver = get_tree().root.find_node(
 	"WindowDragReceiver", true, false)
 onready var title_label : Label = $Title
 onready var pop_in_out_button : Button = $PopInOutButton
@@ -23,6 +23,7 @@ onready var pop_in_out_button : Button = $PopInOutButton
 onready var original_path := get_path()
 
 const PlacementUtils := preload("placement_utils.gd")
+const WindowDragReceiver = preload("res://addons/third_party/customizable_ui/window_drag_receiver.gd")
 
 export var title : String setget set_title
 
@@ -42,20 +43,23 @@ func _ready() -> void:
 func _notification(what : int) -> void:
 	match what:
 		NOTIFICATION_PARENTED:
+			if not title_label:
+				yield(self, "ready")
 			if get_parent() is TabContainer:
-				get_parent().set_tab_title(get_index(), title)
+				(get_parent() as TabContainer).set_tab_title(get_index(), title)
 			if get_parent() is TabContainer or get_parent() is WindowDialog:
-				$Title.hide()
+				title_label.hide()
 			else:
-				$Title.show()
+				title_label.show()
 		NOTIFICATION_VISIBILITY_CHANGED:
 			# apply visibilty to dialog
 			if get_parent() is WindowDialog:
-				get_parent().visible = visible
+				(get_parent() as CanvasItem).visible = visible
 
 
 func get_data():
 	if get_child_count() > 2 and get_child(2).has_method("get_layout_data"):
+# warning-ignore:unsafe_method_access
 		return get_child(2).get_layout_data()
 
 
@@ -88,9 +92,15 @@ func on_WindowDragReceiver_draw() -> void:
 	drag_receiver.preview.draw(drag_receiver.get_canvas_item(), rect)
 
 
-func set_title(to) -> void:
+func set_title(to : String) -> void:
+	if not to:
+		# Avoid resetting the title when the setter is called while loading the
+		# scene because `title` is exported.
+		return
+	if not is_inside_tree():
+		yield(self, "ready")
 	title = to
-	$Title.text = title
+	title_label.text = title
 
 
 func get_drag_data_fw(_position : Vector2, _control : Container):
