@@ -20,6 +20,6 @@ jobs:
         run: |
           apt update
           apt-get -y install python3.9
-          python3.9 package_manager/package_manager.py
+          ./package_manager/package_manager.py update
       - name: Run Tests
         run: godot addons/WAT/cli.tscn -run_all
