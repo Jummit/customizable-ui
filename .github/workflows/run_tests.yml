@@ -22,7 +22,10 @@ jobs:
           python-version: '3.9.6'
           architecture: 'x64'
       - name: Install Python Packages
-        run: pip install requests
+        run: |
+            apt update
+            apt-get -y install pip3
+            pip3 install requests
       - name: Install Packages
         run: ./package_manager/package_manager.py update
       - name: Run Tests
