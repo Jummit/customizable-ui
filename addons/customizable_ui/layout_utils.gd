@@ -2,9 +2,11 @@
 Utility to save and load layouts as json files
 """
 
-const Window = preload("res://addons/third_party/customizable_ui/window.gd")
+const Window = preload("window.gd")
 
-static func save_layout(root : Container, layout_file : String) -> void:
+static func save_layout(root : Control, layout_file : String) -> void:
+	if not root is Container:
+		root = root.get_child(0)
 	var layout := {
 		windows = _store_layout(root),
 		popped_out = []
@@ -71,7 +73,7 @@ static func _store_layout(root : Container) -> Dictionary:
 			}
 			if not node.visible:
 				layout_data.visible = false
-			var data = node.get_data()
+			var data = node.get_layout_data()
 			if data:
 				layout_data.data = var2str(data)
 			layout.children.append(layout_data)
@@ -99,6 +101,7 @@ static func _load_individual_layout(root : Node, layout : Dictionary,
 			container.add_child(panel)
 			panel.visible = true if not "visible" in window else window.visible
 			panel.emit_signal("layout_changed", get_data(window))
+			panel.load_layout_data(get_data(window))
 		else:
 			_load_individual_layout(container, window, windows)
 	root.add_child(container)

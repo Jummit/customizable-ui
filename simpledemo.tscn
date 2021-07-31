@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/customizable_ui/customizable_ui_manager.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/customizable_ui/window.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/customizable_ui/customizable_root.gd" type="Script" id=5]
+
+[node name="Demo" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Root" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Root"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+split_offset = 461
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainWindow" parent="Root/HSplitContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 501.0
+margin_bottom = 600.0
+
+[node name="OutputWindow" parent="Root/HSplitContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 513.0
+margin_top = 0.0
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="WindowDragReceiver" parent="." instance=ExtResource( 1 )]

@@ -8,11 +8,77 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Reference",
+"class": "WAT",
+"language": "GDScript",
+"path": "res://addons/third_party/WAT/namespace.gd"
+}, {
+"base": "Node",
+"class": "WATTest",
+"language": "GDScript",
+"path": "res://addons/third_party/WAT/test/test.gd"
+}, {
+"base": "Reference",
+"class": "_watFileSystem",
+"language": "GDScript",
+"path": "res://addons/third_party/WAT/filesystem/filesystem.gd"
+}, {
+"base": "Reference",
+"class": "_watSettings",
+"language": "GDScript",
+"path": "res://addons/third_party/WAT/settings.gd"
+}, {
+"base": "Reference",
+"class": "_watTestParcel",
+"language": "GDScript",
+"path": "res://addons/third_party/WAT/filesystem/test_parcel.gd"
+}, {
+"base": "Node",
+"class": "_watTestRunner",
+"language": "GDScript",
+"path": "res://addons/third_party/WAT/runner/TestRunner.gd"
+} ]
+_global_script_class_icons={
+"WAT": "",
+"WATTest": "",
+"_watFileSystem": "",
+"_watSettings": "",
+"_watTestParcel": "",
+"_watTestRunner": ""
+}
+
+[WAT]
+
+Test_Directory="res://tests"
+Results_Directory="res://tests"
+Test_Metadata_Directory="res://tests"
+Tags=PoolStringArray(  )
+Window_Size=Vector2( 1280, 720 )
+Minimize_Window_When_Running_Tests=false
+Port=6008
+Run_All_Tests=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"unicode":0,"echo":false,"script":null)
+
+Auto_Refresh_Tests=false
+Display=8
+
 [application]
 
 config/name="Customizable UI Addon"
 run/main_scene="res://demo.tscn"
 config/icon="res://icon.png"
+
+[debug]
+
+gdscript/warnings/exclude_addons=false
+gdscript/warnings/unsafe_property_access=true
+gdscript/warnings/unsafe_method_access=true
+gdscript/warnings/unsafe_cast=true
+gdscript/warnings/unsafe_call_argument=true
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/third_party/WAT/plugin.cfg" )
 
 [rendering]
 

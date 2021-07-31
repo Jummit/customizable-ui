@@ -1,0 +1,90 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://addons/customizable_ui/window.tscn" type="PackedScene" id=1]
+[ext_resource path="res://tests/assets/custom_window.gd" type="Script" id=2]
+[ext_resource path="res://tests/assets/content.gd" type="Script" id=3]
+[ext_resource path="res://tests/assets/signal_content.gd" type="Script" id=4]
+
+[node name="Layout" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+split_offset = 285
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VSplitContainer"]
+margin_right = 1024.0
+margin_bottom = 341.0
+split_offset = 427
+
+[node name="Window" parent="VSplitContainer/HSplitContainer" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 467.0
+margin_bottom = 341.0
+
+[node name="TabContainer" type="TabContainer" parent="VSplitContainer/HSplitContainer"]
+margin_left = 479.0
+margin_right = 1024.0
+margin_bottom = 341.0
+
+[node name="Window1" parent="VSplitContainer/HSplitContainer/TabContainer" instance=ExtResource( 1 )]
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Content" type="Label" parent="VSplitContainer/HSplitContainer/TabContainer/Window1"]
+margin_right = 40.0
+margin_bottom = 14.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Window2" parent="VSplitContainer/HSplitContainer/TabContainer" instance=ExtResource( 1 )]
+visible = false
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Content" type="Label" parent="VSplitContainer/HSplitContainer/TabContainer/Window2"]
+margin_right = 40.0
+margin_bottom = 14.0
+script = ExtResource( 4 )
+
+[node name="Window3" parent="VSplitContainer/HSplitContainer/TabContainer" instance=ExtResource( 1 )]
+visible = false
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+script = ExtResource( 2 )
+
+[node name="Content" type="Label" parent="VSplitContainer/HSplitContainer/TabContainer/Window3"]
+margin_right = 40.0
+margin_bottom = 14.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Window" parent="VSplitContainer" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 353.0
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[connection signal="layout_changed" from="VSplitContainer/HSplitContainer/TabContainer/Window2" to="VSplitContainer/HSplitContainer/TabContainer/Window2/Content" method="_on_Window_layout_changed"]

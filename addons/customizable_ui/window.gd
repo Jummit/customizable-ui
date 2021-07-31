@@ -13,8 +13,6 @@ Windows can be popped out by pressing a button which makes them floating windows
 # warning-ignore:unused_signal
 signal layout_changed(meta)
 
-onready var drag_receiver : WindowDragReceiver = get_tree().root.find_node(
-	"WindowDragReceiver", true, false)
 onready var title_label : Label = $Title
 onready var pop_in_out_button : Button = $PopInOutButton
 
@@ -22,14 +20,12 @@ onready var pop_in_out_button : Button = $PopInOutButton
 # warning-ignore:unused_class_variable
 onready var original_path := get_path()
 
-const PlacementUtils := preload("placement_utils.gd")
-const WindowDragReceiver = preload("res://addons/third_party/customizable_ui/window_drag_receiver.gd")
+var content : Node
 
 export var title : String setget set_title
 
 func _ready() -> void:
 	title_label.set_drag_forwarding(self)
-	drag_receiver.connect("draw", self, "on_WindowDragReceiver_draw")
 	if title:
 		return
 	for letter in name:
@@ -38,6 +34,10 @@ func _ready() -> void:
 		title += letter
 	title = title.replace("Window", "").substr(1)
 	set_title(title)
+	if get_child_count() > 2:
+		content = get_child(2)
+	if get_signal_connection_list("layout_changed").size():
+		push_warning("Using the layout_changed signal is deprecated, provide a load_layout_data method instead.")
 
 
 func _notification(what : int) -> void:
@@ -57,10 +57,14 @@ func _notification(what : int) -> void:
 				(get_parent() as CanvasItem).visible = visible
 
 
-func get_data():
-	if get_child_count() > 2 and get_child(2).has_method("get_layout_data"):
-# warning-ignore:unsafe_method_access
-		return get_child(2).get_layout_data()
+func get_layout_data():
+	if content and content.has_method("get_layout_data"):
+		return content.get_layout_data()
+
+
+func load_layout_data(data) -> void:
+	if content and content.has_method("load_layout_data"):
+			content.load_layout_data(data)
 
 
 func _on_PopInOutButton_pressed():
@@ -68,28 +72,6 @@ func _on_PopInOutButton_pressed():
 		pop_in()
 	else:
 		pop_out()
-
-
-func on_WindowDragReceiver_draw() -> void:
-	var placement := get_placement(
-		PlacementUtils.get_window_from_drag_data(
-		get_tree(), get_viewport().gui_get_drag_data()))
-	if not placement:
-		return
-	var third_size := rect_size / 3.0
-	var rect := Rect2(Vector2(), third_size)
-	if placement.horizontal:
-		rect.size.y = rect_size.y
-	elif placement.vertical:
-		rect.size.x = rect_size.x
-	if placement.right:
-		rect.position.x = third_size.x * 2
-	elif placement.bottom:
-		rect.position.y = third_size.y * 2
-	if placement.middle:
-		rect.position = third_size
-	rect.position += rect_global_position
-	drag_receiver.preview.draw(drag_receiver.get_canvas_item(), rect)
 
 
 func set_title(to : String) -> void:
@@ -110,207 +92,6 @@ func get_drag_data_fw(_position : Vector2, _control : Container):
 	}
 
 
-func place_window_ontop(window : Panel) -> bool:
-	var placement := get_placement(window)
-	if not placement:
-		return false
-	
-	if get_parent() is TabContainer:
-		if placement.middle:
-			if get_parent() == window.get_parent():
-				return false
-			place_window_into_tabs(window)
-		elif window == self:
-			place_self_on_tabs(placement)
-		else:
-			place_window_on_tabs(window, placement)
-	elif window.get_parent() == get_parent():
-		place_window_with_same_parent(window, placement)
-	else:
-		place_window_normal(window, placement)
-	return true
-
-# container
-# ┣ window
-# ┗ self
-#     ↓
-# new_container
-# ┣ window
-# ┗ self
-func place_window_with_same_parent(window : Panel,
-		placement : PlacementUtils.WindowPlacement) -> void:
-	var new_container := placement.get_container(window)
-	get_parent().replace_by(new_container)
-	new_container.move_child(window, placement.index)
-
-# container
-# ┣ other_window
-# ┗ self
-#      ↓
-# container
-# ┣ other_window
-# ┗ new_container
-#   ┣ self
-#   ┗ window
-
-# container
-# ┣ self
-# ┗ container
-#   ┣ other_window
-#   ┗ window
-#      ↓
-# container
-# ┣ other_window
-# ┗ new_container
-#   ┣ self
-#   ┗ window
-
-func place_window_normal(window : Panel,
-	placement : PlacementUtils.WindowPlacement) -> void:
-	var previous_index := get_index()
-	remove_from_container(window)
-	
-	var parent := get_parent()
-	parent.remove_child(self)
-	
-	var new_container := placement.get_container(window)
-	new_container.add_child(self)
-	new_container.add_child(window)
-	parent.add_child(new_container)
-	new_container.move_child(window, placement.index)
-	parent.move_child(new_container, previous_index)
-	update_size(parent)
-
-# tab_container
-# ┣ self
-# ┗ other_window
-#     ↓
-# tab_container
-# ┣ self
-# ┣ other_window
-# ┗ window
-func place_window_into_tabs(window : Panel) -> void:
-	remove_from_container(window)
-	get_parent().add_child(window)
-
-
-# tab_container
-# ┣ other_window
-# ┗ self
-#    ↓
-# new_container
-# ┣ tab_container
-# ┃ ┣ other_window
-# ┃ ┗ self
-# ┗ window
-
-# container
-# ┣ tab_container
-# ┃ ┣ other_window
-# ┃ ┗ self
-# ┗ window
-#    ↓
-# new_container
-# ┣ tab_container
-# ┃ ┣ other_window
-# ┃ ┗ self
-# ┗ window
-func place_window_on_tabs(window : Panel,
-	placement : PlacementUtils.WindowPlacement) -> void:
-	if window.get_parent() == get_parent().get_parent():
-		var new_container := placement.get_container(window)
-		window.get_parent().replace_by(new_container)
-		new_container.move_child(window, placement.index)
-		return
-	
-	var parent_container := get_parent().get_parent()
-	var tab_container : TabContainer = get_parent()
-	var old_index := tab_container.get_index()
-	remove_from_container(window)
-	
-	parent_container.remove_child(tab_container)
-	
-	var new_container := placement.get_container(window)
-	new_container.add_child(tab_container)
-	new_container.add_child(window)
-	new_container.move_child(window, placement.index)
-	
-	parent_container.add_child(new_container)
-	parent_container.move_child(new_container, old_index)
-	update_size(new_container)
-
-
-# tab_container
-# ┣ other_window
-# ┣ another_window
-# ┗ self
-#      ↓
-# new_container
-# ┣ tab_container
-# ┃ ┣ other_window
-# ┃ ┗ another_window
-# ┗ self
-
-# tab_container
-# ┣ other_window
-# ┗ self
-#      ↓
-# new_container
-# ┃ other_window
-# ┗ self
-func place_self_on_tabs(placement : PlacementUtils.WindowPlacement) -> void:
-	if get_parent().get_child_count() <= 2:
-		get_parent().replace_by(placement.get_container(self))
-	else:
-		place_window_on_tabs(self, placement)
-
-
-# container
-# ┣ window
-# ┗ other_window
-#      ↓
-# other_window
-
-# container
-# ┣ window
-# ┣ other_window
-# ┗ another_window
-#      ↓
-# container
-# ┣ other_window
-# ┗ another_window
-func remove_from_container(window : Panel) -> void:
-	var parent := window.get_parent()
-	var original_index := parent.get_index()
-	parent.remove_child(window)
-	window.show()
-	if parent is WindowDialog:
-		parent.free()
-	elif parent.get_child_count() <= 1:
-		var other_window = parent.get_child(0)
-		parent.remove_child(other_window)
-		other_window.show()
-		parent.get_parent().add_child(other_window)
-		parent.get_parent().move_child(other_window, original_index)
-		parent.free()
-
-
-func update_size(container : Control) -> void:
-	container.rect_position = Vector2.ZERO
-	container.anchor_right = 1
-	container.anchor_bottom = 1
-	container.margin_right = 0
-	container.margin_bottom = 0
-
-
-func get_placement(window : Panel) -> PlacementUtils.WindowPlacement:
-	if (not window) or (not visible) or (window == self and\
-			not get_parent() is TabContainer):
-		return null
-	var placement := PlacementUtils.get_drop_placement(self)
-	return placement
-
-
 func put_in_window() -> WindowDialog:
 	var window := WindowDialog.new()
 	window.window_title = title
@@ -324,9 +105,9 @@ func put_in_window() -> WindowDialog:
 	# `WindowDialog` doesn't use child minimum size
 	window.rect_min_size = rect_min_size
 	window.add_child(self)
-	drag_receiver.get_parent().add_child(window)
+	# TODO: don't use tree.
+	get_tree().root.add_child(window)
 	window.visible = visible
-	update_size(self)
 	pop_in_out_button.text = "v"
 	pop_in_out_button.hint_tooltip = "Pop window in."
 	return window
@@ -339,5 +120,5 @@ func pop_in() -> void:
 
 
 func pop_out() -> void:
-	remove_from_container(self)
+	# TODO: remove from node tree.
 	put_in_window()
