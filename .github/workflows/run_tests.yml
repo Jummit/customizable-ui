@@ -17,9 +17,11 @@ jobs:
         with:
           submodules: true
       - name: Install Packages
-        run: |
-          apt update
-          apt-get -y install python3.9
-          ./package_manager/package_manager.py update
+        uses: actions/checkout@v2
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.6'
+          architecture: 'x64'
+        run: ./package_manager/package_manager.py update
       - name: Run Tests
         run: godot addons/WAT/cli.tscn -run_all
