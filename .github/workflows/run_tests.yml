@@ -13,11 +13,10 @@ jobs:
       image: docker://barichello/godot-ci:3.3.2
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           submodules: true
       - name: Setup Python
-        uses: actions/checkout@v2
         uses: actions/setup-python@v2
         with:
           python-version: '3.9.6'
