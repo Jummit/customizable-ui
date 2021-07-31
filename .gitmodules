@@ -1,3 +1,3 @@
 [submodule "godot-package-manager"]
-	path = godot-package-manager
+	path = package-manager
 	url = https://github.com/Jummit/godot-package-manager.git
