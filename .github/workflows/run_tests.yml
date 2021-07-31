@@ -23,4 +23,4 @@ jobs:
       - name: Install Packages
         run: ./package_manager/package_manager.py update
       - name: Run Tests
-        run: godot addons/WAT/cli.tscn -run_all
+        run: godot addons/third_party/WAT/cli.tscn -run_all
